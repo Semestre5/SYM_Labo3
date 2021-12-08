@@ -19,7 +19,7 @@
         android:theme="@style/Theme.Labo3">
         <activity
             android:name=".beacon.Beacon"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".barcode.BarCode"
             android:exported="true" />
