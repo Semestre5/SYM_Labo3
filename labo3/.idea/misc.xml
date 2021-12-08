@@ -5,6 +5,9 @@
       <map>
         <entry key="..\:/Users/axelv/projets/Semestre5/SYM/SYM_Labo3/labo3/app/src/main/res/layout/activity_bar_code2.xml" value="0.290625" />
         <entry key="..\:/Users/axelv/projets/Semestre5/SYM/SYM_Labo3/labo3/app/src/main/res/layout/activity_main.xml" value="0.290625" />
+        <entry key="app/src/main/res/layout/activity_bar_code2.xml" value="0.2821557971014493" />
+        <entry key="app/src/main/res/layout/activity_beacon.xml" value="0.2821557971014493" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2821557971014493" />
       </map>
     </option>
   </component>
