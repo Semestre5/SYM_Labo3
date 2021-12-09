@@ -1,25 +1,23 @@
 package ch.heigvd.sym.labo3.beacon
 
 import android.Manifest
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import ch.heigvd.sym.labo3.R
 import android.bluetooth.BluetoothAdapter
-import android.content.ContentValues.TAG
-import android.content.Intent
-import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.os.RemoteException
+import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.altbeacon.beacon.BeaconConsumer
+import ch.heigvd.sym.labo3.R
+import org.altbeacon.beacon.Beacon
 import org.altbeacon.beacon.BeaconManager
 import org.altbeacon.beacon.BeaconParser
 import org.altbeacon.beacon.Region
+import androidx.lifecycle.Observer
+import org.altbeacon.beacon.service.BeaconService.TAG
 
 private const val BEACON_FORMAT: String = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"
 
@@ -49,6 +47,12 @@ class Beacon : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
         }
 
+        // Attach the recycler view, and the adapter to it
+        val recyclerView: RecyclerView = findViewById(R.id.beacon_recycler_view)
+        beaconAdapter = BeaconAdapter()
+        recyclerView.adapter = beaconAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
         // Initialize BeaconManager
         beaconManager = BeaconManager.getInstanceForApplication(this)
         beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(BEACON_FORMAT))
@@ -57,37 +61,20 @@ class Beacon : AppCompatActivity() {
         beaconManager.foregroundBetweenScanPeriod = 1000
         beaconManager.updateScanPeriods()
 
-        // Attach the recycler view, and the adapter to it
-        val recyclerView: RecyclerView = findViewById(R.id.beacon_recycler_view)
-        beaconAdapter = BeaconAdapter()
-        recyclerView.adapter = beaconAdapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        // Begin the scan
+        val region = Region("all-beacons-region", null, null, null)
+        val regionViewModel = BeaconManager.getInstanceForApplication(this).getRegionViewModel(region)
+        regionViewModel.rangedBeacons.observeForever( centralRangingObserver)
+        beaconManager.startRangingBeacons(region)
     }
 
-    override fun unbindService(conn: ServiceConnection) {
-        super.unbindService(conn)
-
-        // Stop scanning
-        try {
-            beaconManager.stopRangingBeaconsInRegion(Region("myRangingUniqueId", null, null, null))
-        } catch (e: RemoteException) {
-            Log.e(TAG, e.stackTrace.toString())
-        }
-    }
-
-    override fun onBeaconServiceConnect() {
+    val centralRangingObserver = Observer<Collection<Beacon>> { beacons ->
         beaconManager.removeAllRangeNotifiers()
         beaconManager.addRangeNotifier { beacons, region ->
 
             // Update RecyclerView UI
             beaconAdapter.setBeacons(beacons)
             beaconAdapter.notifyDataSetChanged()
-        }
-
-        try {
-            beaconManager.startRangingBeaconsInRegion(Region("myRangingUniqueId", null, null, null))
-        } catch (e: RemoteException) {
-            Log.e(TAG, e.stackTrace.toString())
         }
     }
 }

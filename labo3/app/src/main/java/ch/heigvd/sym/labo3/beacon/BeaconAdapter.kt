@@ -13,7 +13,7 @@ class BeaconAdapter : RecyclerView.Adapter<BeaconAdapter.ViewHolder>() {
     private var beacons: List<Beacon> = ArrayList()
 
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
-        // Any view that will be set while rendering row
+        // Get all the data TextViews
         val uuid: TextView = itemView.findViewById(R.id.uuid_data)
         val major: TextView = itemView.findViewById(R.id.major_data)
         val minor: TextView = itemView.findViewById(R.id.minor_data)
@@ -23,16 +23,13 @@ class BeaconAdapter : RecyclerView.Adapter<BeaconAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BeaconAdapter.ViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
-        // Inflate the custom layout
         val contactView = inflater.inflate(R.layout.item_beacon, parent, false)
-        // Return a new holder instance
         return ViewHolder(contactView)
     }
 
     override fun onBindViewHolder(viewHolder: BeaconAdapter.ViewHolder, position: Int) {
-        // Get the data model based on position
         val beacon: Beacon = beacons[position]
-        // Set item views based on views and data model
+        // Set data on the TextViews
         viewHolder.uuid.text = beacon.id1.toString()
         viewHolder.major.text = beacon.id2.toString()
         viewHolder.minor.text = beacon.id3.toString()
