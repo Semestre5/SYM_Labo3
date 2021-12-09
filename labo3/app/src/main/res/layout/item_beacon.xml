@@ -72,18 +72,19 @@
         android:id="@+id/rssi_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginBottom="12dp"
         android:text="@string/rssi"
-        app:layout_constraintBottom_toTopOf="@+id/rssi_data"
-        app:layout_constraintLeft_toLeftOf="@+id/rssi_data"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/minor_data"/>
 
     <TextView
         android:id="@+id/rssi_data"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="10dp"
         android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/minor_data" />
+        app:layout_constraintStart_toEndOf="@+id/rssi_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
