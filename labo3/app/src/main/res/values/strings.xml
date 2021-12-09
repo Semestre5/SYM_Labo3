@@ -7,4 +7,6 @@
     <string name="major">Major:</string>
     <string name="minor">Minor:</string>
     <string name="rssi">RSSI:</string>
+    <string name="scan">Scan en cours, aucun iBeacon détecté</string>
+    <string name="warning">Le Bluetooth doit être activé et la localisation autorisée</string>
 </resources>
