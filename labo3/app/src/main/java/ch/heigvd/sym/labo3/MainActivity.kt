@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import ch.heigvd.sym.labo3.barcode.BarCode
 import ch.heigvd.sym.labo3.beacon.Beacon
+import ch.heigvd.sym.labo3.nfc.NfcActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var barcode: Button
@@ -26,8 +27,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         nfc.setOnClickListener {
-            //val intent = Intent(this@MainActivity, DeferredActivity::class.java)
-            //startActivity(intent)
+            val intent = Intent(this@MainActivity, NfcActivity::class.java)
+            startActivity(intent)
         }
     }
 }

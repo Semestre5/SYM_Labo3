@@ -7,4 +7,5 @@
     <string name="major">Major:</string>
     <string name="minor">Minor:</string>
     <string name="rssi">RSSI:</string>
+    <string name="explanation">whatever</string>
 </resources>

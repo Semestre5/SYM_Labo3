@@ -75,6 +75,7 @@ class Beacon : AppCompatActivity() {
         }
     }
 
+    /*
     override fun onBeaconServiceConnect() {
         beaconManager.removeAllRangeNotifiers()
         beaconManager.addRangeNotifier { beacons, region ->
@@ -90,4 +91,6 @@ class Beacon : AppCompatActivity() {
             Log.e(TAG, e.stackTrace.toString())
         }
     }
+
+     */
 }
