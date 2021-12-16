@@ -10,4 +10,19 @@
     <string name="explanation">whatever</string>
     <string name="scan">Scan en cours, aucun iBeacon détecté</string>
     <string name="warning">Le Bluetooth doit être activé et la localisation autorisée</string>
+
+    <string name="no_nfc">This device does not support NFC</string>
+    <string name="enable_nfc">Enable NFC to continue</string>
+
+    <string name="auth_frag_countdown">Countdown: 0</string>
+    <string name="auth_frag_status">Connect tag to authenticate</string>
+    <string name="max_btn">Maximum access</string>
+    <string name="med_btn">Medium access</string>
+    <string name="low_btn">Low access</string>
+    <string name="max_auth_txt">Maximum level</string>
+    <string name="med_auth_txt">Medium level</string>
+    <string name="low_auth_txt">Low level</string>
+    <string name="ok_access">access granted</string>
+    <string name="no_access">access refused</string>
+
 </resources>

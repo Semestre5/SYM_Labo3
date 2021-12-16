@@ -5,90 +5,84 @@ import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.TextView
-import android.view.View
 import android.widget.Toast
 import ch.heigvd.sym.labo3.R
 import android.content.IntentFilter.MalformedMimeTypeException
 import android.content.IntentFilter
 import android.app.PendingIntent
 import android.nfc.NdefMessage
+import android.nfc.NdefRecord
+import android.os.CountDownTimer
 
-class NfcActivity:  AppCompatActivity()  {
+var loggedIn = false;
+
+class NfcActivity:  AppCompatActivity() {
 
     val MIME_TEXT_PLAIN = "text/plain"
-    public final val TAG = "Nfc Activity";
+    val TAG = "Nfc Activity"
 
-    private lateinit var mTextView: TextView;
-    private lateinit var mTagDataTextView: TextView;
-    private lateinit var mNfcAdapter: NfcAdapter;
+    val MAX_AUTH = 12
+    val MED_AUTH = 8
+    val LOW_AUTH = 4
+    private val NFC_TAG_STR = "test"
 
-    private var nfcAdapter: NfcAdapter? = null
+    private var authenticationLevel = 0
+
+    private lateinit var mNfcAdapter: NfcAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_nfc)
-        mTextView = findViewById<View>(R.id.textView_explanation) as TextView
+        Log.d(TAG, "onCreate")
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
         if (mNfcAdapter == null) {
             // Stop here, we definitely need NFC
-            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.no_nfc, Toast.LENGTH_LONG).show()
             finish()
             return
         }
-        if (!mNfcAdapter.isEnabled()) {
-            mTextView.setText("NFC is disabled.")
-        } else {
-            mTextView.setText(R.string.explanation)
-        }
-    }
+        if (!mNfcAdapter.isEnabled)
+            Toast.makeText(this, R.string.enable_nfc, Toast.LENGTH_LONG).show()
+        if(savedInstanceState == null)
+            supportFragmentManager.beginTransaction().replace(R.id.nfc_fragment_container,
+                LoginFragment()).commit()
+        setContentView(R.layout.activity_nfc)
 
+    }
 
     override fun onResume() {
         super.onResume()
-        /**
-         * It's important, that the activity is in the foreground (resumed). Otherwise
-         * an IllegalStateException is thrown.
-         */
         setupForegroundDispatch()
     }
+
     override fun onPause() {
-        /**
-         * Call this before onPause, otherwise an IllegalArgumentException is thrown as well.
-         */
-        stopForegroundDispatch()
         super.onPause()
+        stopForegroundDispatch()
+
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        Log.d(TAG, "hello")
+        processNfcTag(intent)
+    }
 
-
+    private fun processNfcTag(intent: Intent?){
         if (intent != null) {
             if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
-                val ndefMessagesArray = intent!!.getParcelableArrayExtra(
-                    NfcAdapter.EXTRA_NDEF_MESSAGES
-                )
-                if (ndefMessagesArray != null){
-                    for (message in ndefMessagesArray) {
-                        val parsedMessage: NdefMessage = message as NdefMessage
-                        val records = parsedMessage.records
-                        if(records != null) {
-                            for(record in records){
-                                val payload: String = String(record.payload)
-                                mTextView.setText(payload.subSequence(3, payload.length))
-                                Log.d(TAG, "payload: ${payload.subSequence(3, payload.length)}")
+                val record = deserializeNfcData(intent)?.get(0)
+                if (record != null) {
+                    val payload: String = String(record.payload)
+                    if(payload.subSequence(3, payload.length) == NFC_TAG_STR) {
+                        authenticationLevel = MAX_AUTH;
+                        object: CountDownTimer(12000, 1000) {
+                            override fun onTick(p0: Long) {
+                                authenticationLevel -= 1
                             }
-                        }
+                            override fun onFinish() {
+                                authenticationLevel = 0
+                            }
+                        }.start()
                     }
                 }
-                /*
-                val ndefMessage = ndefMessageArray!![0] as NdefMessage
-                val msg = String(ndefMessage.records[0].payload)
-                Log.d(TAG, msg);
-
-                 */
             }
         }
     }
@@ -105,7 +99,7 @@ class NfcActivity:  AppCompatActivity()  {
         filters[0]!!.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED)
         filters[0]!!.addCategory(Intent.CATEGORY_DEFAULT)
         try {
-            filters[0]!!.addDataType("text/plain")
+            filters[0]!!.addDataType(MIME_TEXT_PLAIN)
         } catch (e: MalformedMimeTypeException) {
             Log.e(TAG, "MalformedMimeTypeException", e)
         }
@@ -114,6 +108,32 @@ class NfcActivity:  AppCompatActivity()  {
 
     private fun stopForegroundDispatch() {
         mNfcAdapter.disableForegroundDispatch(this)
+    }
+
+    private fun deserializeNfcData(intent: Intent?): Array<out NdefRecord>? {
+        val ndefMessagesArray = intent!!.getParcelableArrayExtra(
+            NfcAdapter.EXTRA_NDEF_MESSAGES
+        )
+        if (ndefMessagesArray != null) {
+            val parsedMessage: NdefMessage = ndefMessagesArray[0] as NdefMessage
+            return parsedMessage.records
+        }
+        return null
+    }
+
+    fun loggedIn() {
+        loggedIn = true;
+        supportFragmentManager.findFragmentById(R.id.nfc_fragment_container)?.let {
+            supportFragmentManager.beginTransaction().remove(
+                it
+            ).add(R.id.nfc_fragment_container,
+                AuthenticatedFragment()
+            ).commit()
+        };
+    }
+
+    fun getAuthenticationLevel(): Int {
+        return authenticationLevel
     }
 
 
