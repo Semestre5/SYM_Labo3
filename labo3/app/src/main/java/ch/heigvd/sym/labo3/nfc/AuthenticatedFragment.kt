@@ -5,7 +5,6 @@
  */
 package ch.heigvd.sym.labo3.nfc
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -80,16 +79,16 @@ class AuthenticatedFragment : Fragment() {
         nfcAuthStatus = view?.findViewById(R.id.auth_status)!!
         if(act.MED_AUTH < authLevel){
             nfcAuthStatus.setText(R.string.max_auth_txt)
-            nfcAuthStatus.setTextColor(Color.parseColor(R.color.green.toString()))
+            nfcAuthStatus.setTextColor(resources.getColor(R.color.green))
         } else if((act.LOW_AUTH < authLevel) and (authLevel <= act.MED_AUTH)){
             nfcAuthStatus.setText(R.string.med_auth_txt)
-            nfcAuthStatus.setTextColor(Color.parseColor(R.color.elek_blue.toString()))
+            nfcAuthStatus.setTextColor(resources.getColor(R.color.elek_blue))
         } else if((0 < authLevel) and (authLevel <= act.LOW_AUTH)){
             nfcAuthStatus.setText(R.string.low_auth_txt)
-            nfcAuthStatus.setTextColor(Color.parseColor(R.color.orange.toString()))
+            nfcAuthStatus.setTextColor(resources.getColor(R.color.orange))
         } else {
             nfcAuthStatus.setText(R.string.auth_frag_status)
-            nfcAuthStatus.setTextColor(Color.parseColor(R.color.red.toString()))
+            nfcAuthStatus.setTextColor(resources.getColor(R.color.red))
         }
     }
 
