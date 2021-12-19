@@ -1,3 +1,9 @@
+/**
+ * Authors: Robin GAUDIN, Lev POZNIAKOFF, Axel Vallon
+ *
+ * Date: 19.12.2021
+ */
+
 package ch.heigvd.sym.labo3.nfc
 
 import android.os.Bundle

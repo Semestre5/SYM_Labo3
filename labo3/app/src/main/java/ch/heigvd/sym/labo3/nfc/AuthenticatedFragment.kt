@@ -1,3 +1,8 @@
+/**
+ * Authors: Robin GAUDIN, Lev POZNIAKOFF, Axel Vallon
+ *
+ * Date: 19.12.2021
+ */
 package ch.heigvd.sym.labo3.nfc
 
 import android.graphics.Color
@@ -33,6 +38,9 @@ class AuthenticatedFragment : Fragment() {
     }
 
 
+    /**
+     * Initialize the view with it's various buttons and text boxes
+     */
     override fun onStart() {
         super.onStart()
         val act = activity as NfcActivity
@@ -63,6 +71,10 @@ class AuthenticatedFragment : Fragment() {
         }
     }
 
+    /**
+     * updates the authentication status regarding the authentication
+     * level
+     */
     private fun updateAuthStatus(act: NfcActivity){
         val authLevel = act.getAuthenticationLevel()
         nfcAuthStatus = view?.findViewById(R.id.auth_status)!!

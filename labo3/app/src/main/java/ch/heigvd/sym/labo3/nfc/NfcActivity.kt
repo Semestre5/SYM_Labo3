@@ -1,3 +1,9 @@
+/**
+ * Authors: Robin GAUDIN, Lev POZNIAKOFF, Axel Vallon
+ *
+ * Date: 19.12.2021
+ */
+
 package ch.heigvd.sym.labo3.nfc
 
 import android.content.Intent
@@ -30,12 +36,13 @@ class NfcActivity:  AppCompatActivity() {
 
     private lateinit var mNfcAdapter: NfcAdapter
 
+    /**
+     * Initialize the activity and verifies that nfc is activated
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate")
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
         if (mNfcAdapter == null) {
-            // Stop here, we definitely need NFC
             Toast.makeText(this, R.string.no_nfc, Toast.LENGTH_LONG).show()
             finish()
             return
@@ -60,11 +67,18 @@ class NfcActivity:  AppCompatActivity() {
 
     }
 
+    /**
+     * manages the nfc tag data when it's detected by the app
+     */
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         processNfcTag(intent)
     }
 
+    /**
+     *  processes the data from the nfc tag
+     * @param the intent containing the nfc tag data
+     */
     private fun processNfcTag(intent: Intent?){
         if (intent != null) {
             if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
@@ -110,6 +124,10 @@ class NfcActivity:  AppCompatActivity() {
         mNfcAdapter.disableForegroundDispatch(this)
     }
 
+    /**
+     * @param intent: the intent containing the NFC tag data
+     * @return the message contained in the nfc tag
+     */
     private fun deserializeNfcData(intent: Intent?): Array<out NdefRecord>? {
         val ndefMessagesArray = intent!!.getParcelableArrayExtra(
             NfcAdapter.EXTRA_NDEF_MESSAGES
@@ -121,12 +139,13 @@ class NfcActivity:  AppCompatActivity() {
         return null
     }
 
+    /**
+     * @brief gives the status loggedIn to the nfcActivity and launches the authenticated fragment
+     */
     fun loggedIn() {
         loggedIn = true;
         supportFragmentManager.findFragmentById(R.id.nfc_fragment_container)?.let {
-            supportFragmentManager.beginTransaction().remove(
-                it
-            ).add(R.id.nfc_fragment_container,
+            supportFragmentManager.beginTransaction().remove(it).add(R.id.nfc_fragment_container,
                 AuthenticatedFragment()
             ).commit()
         };
