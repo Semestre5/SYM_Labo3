@@ -6,13 +6,39 @@
 
 ## Balises NFC
 
+### Organisation du code
+
+La gestion des messages des tags NFC est géré à travers 3 classes: ``NfcActivity``, ``LoginFragment``, ``AuthenticatedFragment``. Comme les noms l'indiquent nous avons 2 fragments contenus dans 1 activité. 
+
+Le ``LoginFragment`` a pour but de faire une première authentification de l'utilisateur. Les credentials sont codés en dur dans le code, à savoir:
+
+**Username: ** hello
+
+**Password: **world
+
+Une fois l'authentification faite, nous arrivons sur ``AuthenticatedFragment``. Il possède 3 boutons pour les 3 niveaux d'authentification ainsi qu'un compteur et d'un affichage coloré du niveau d'authentification actuel. Si l'utilisateur clique sur un bouton pour lequel il a les droits, un message de connexion s'affichera sous la forme d'un toast. Dans le cas d'un clique sur un bouton pour lequel l'utilisateur n'a pas les droit, un toast indiquant la connexion invalide s'affichera.
+
+### Question
+
+> 2.4.1 Dans la manipulation ci-dessus, les tags NFC utilisés contiennent 4 valeurs textuelles codées en UTF-8 dans un format de message NDEF. Une personne malveillante ayant accès au porteclés peut aisément copier les valeurs stockées dans celui-ci et les répliquer sur une autre puce NFC.
+>
+> A partir de l’API Android concernant les tags NFC3 , pouvez-vous imaginer une autre approche pour rendre plus compliqué le clonage des tags NFC ? Existe-il des limitations ? Voyez-vous d’autres possibilités ?
+
+Après recherche il semblerait qu'il n'est pas possible d'empêcher de copier le contenu d'un tag NFC puisque les tags n'implémentent pas de fonction dans ce sens. Certains fabricants empêchent la modification de certaines données d'un tag comme un ID. 
+
+Il existe des tags qui stockent leurs données en les cryptant. Ceci n'empêche pas la copie des données mais en préserve leur confidentialité.
+
+Ce [forum](https://security.stackexchange.com/questions/63483/how-do-nfc-tags-prevent-copying) a permis de répondre à cette question
+
+> 2.4.2 Est-ce qu’une solution basée sur la vérification de la présence d’un iBeacon sur l’utilisateur, par exemple sous la forme d’un porte-clés serait préférable ? Veuillez en discuter.
+
+Non. Il suffirait à l'utilisateur d'être à une dizaine de mètre de la victime pour se connecter au beacon. Cette authentification 2FA n'est donc pas efficace.
+
 ## Codes-barres
 
-### 3.2 Questions
+### Questions
 
-### 3.2.1
-
-`Quelle est la quantité maximale de données pouvant être stockée sur un QR-code ? Veuillez expérimenter, avec le générateur conseillé5 de codes-barres (QR), de générer différentes tailles de QR-codes. Pensez-vous qu’il est envisageable d’utiliser confortablement des QRcodes complexes (par exemple du contenant >500 caractères de texte, une vCard très complète ou encore un certificat Covid)`
+> 3.2.1 Quelle est la quantité maximale de données pouvant être stockée sur un QR-code ? Veuillez expérimenter, avec le générateur conseillé5 de codes-barres (QR), de générer différentes tailles de QR-codes. Pensez-vous qu’il est envisageable d’utiliser confortablement des QRcodes complexes (par exemple du contenant >500 caractères de texte, une vCard très complète ou encore un certificat Covid)`
 
 **Taille maximale**
 
@@ -50,9 +76,9 @@ On peut via ces attribut deviner que la taille maximum d'un code QR ne permettra
 
 Il est donc visible qu'il est donc très pratique d'utiliser ces code QR pour transmettre un payload d'information simple et structuré. Cependant, ce genre de passage d'information n'est pas optimal pour afficher directement une page web, ou des images. Il est mieux dans ce cas d'utiliser des code QR contenant une URL vers la ressource.
 
-### 3.2.2
+### 
 
-`Il existe de très nombreux services sur Internet permettant de générer des QR-codes dynamiques. Veuillez expliquer ce que sont les QR-codes dynamiques. Quels sont les avantages et respectivement les inconvénients à utiliser ceux-ci en comparaison avec des QR-codes statiques. Vous adapterez votre réponse à une utilisation depuis une plateforme mobile.`
+>3.2.2 Il existe de très nombreux services sur Internet permettant de générer des QR-codes dynamiques. Veuillez expliquer ce que sont les QR-codes dynamiques. Quels sont les avantages et respectivement les inconvénients à utiliser ceux-ci en comparaison avec des QR-codes statiques. Vous adapterez votre réponse à une utilisation depuis une plateforme mobile.
 
 Un code QR dynamique ont une URL courte intégrée dans le code, et permettent de rediriger vers une autre URL en passant souvent par un intermédiaire. 
 
@@ -86,11 +112,9 @@ Pour l'implémentation des balises iBeacon, nous avons créé 2 activités, l'un
 
 Nous avons utilisé la librairie proposée (AltBeacon), et pour comprendre son fonctionnement nous avons simplement téléchargé et essayé leur application de base. Ceci nous a permis d'analyser quelles méthodes nous avions besoin pour la réalisation demandée.
 
-### 4.2 Question
+### Question
 
-Les iBeacons sont très souvent présentés comme une alternative à NFC. Vous commenterez cette
-affirmation en vous basant sur 2-3 exemples de cas d’utilisations (use-cases) concrets (par exemple e-
-paiement, second facteur d’identification, accéder aux horaires à un arrêt de bus, etc.).
+> 4.2 Les iBeacons sont très souvent présentés comme une alternative à NFC. Vous commenterez cette affirmation en vous basant sur 2-3 exemples de cas d’utilisations (use-cases) concrets (par exemple e-paiement, second facteur d’identification, accéder aux horaires à un arrêt de bus, etc.).
 
 Les iBeacons ont une utilisation différente du NFC, ils permettent de diffuser des informations à plusieurs personnes en même temps, et ont une portée bien plus grande (jusqu'à 100m pour les iBeacon, vs 20cm pour le NFC).
 
